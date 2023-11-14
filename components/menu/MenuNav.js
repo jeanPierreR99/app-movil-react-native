@@ -54,7 +54,7 @@ alignItems:'center',
     alignItems:'center',
     backgroundColor:'#e93373',
     width:'80%',
-    marginLeft:45,
+    alignSelf:'center',
     borderRadius:6
   },
 scan:{

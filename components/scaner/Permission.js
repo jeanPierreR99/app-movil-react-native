@@ -6,6 +6,7 @@ import MenuNav from '../menu/MenuNav';
 function QRCodeScanner() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const [data, setData] = useState("")
 
   useEffect(() => {
     (async () => {
@@ -15,7 +16,8 @@ function QRCodeScanner() {
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(true); 
+    setScanned(true);
+    setData(data)
   };
 
   if (hasPermission === null) {
@@ -33,7 +35,7 @@ function QRCodeScanner() {
         style={StyleSheet.absoluteFillObject}
       />
       {scanned && (
-        <ModalScanner scan={setScanned}></ModalScanner>
+        <ModalScanner scan={setScanned} data={data}></ModalScanner>
       )}
     </View>
     <MenuNav showMenu={true}/>

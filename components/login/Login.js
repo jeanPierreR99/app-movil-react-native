@@ -1,6 +1,17 @@
 import React, {useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground,ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const saveCredentials = async (username, password) => {
+  try {
+    await AsyncStorage.setItem('username', username);
+    await AsyncStorage.setItem('password', password);
+  } catch (error) {
+    console.error('Error al guardar las credenciales:', error);
+  }
+};
+
 const Login = () => {
     const [code, setCode] = useState('');
     const [password, setPassword] = useState('');
@@ -10,6 +21,7 @@ const Login = () => {
     const loginClick = ()=>{
         if(code == "17121015" && password == '1234'){
         setLoading(true);
+        saveCredentials(code, password)
         setTimeout(() => {
           navigation.navigate('Profile')
     
@@ -55,10 +67,10 @@ const Login = () => {
         )}
       </TouchableOpacity>
         <View style={styles.register}>
-            <Text style={styles.text}>¿Todavia no tienes una cuenta?</Text>
-      <TouchableOpacity>
-            <Text style={styles.registerText}>Registrarse</Text>
-      </TouchableOpacity>
+        <Text style={styles.text}>¿Todavia no tienesuna cuenta?.
+        {' '} <Text style={styles.registerText}>Registrarse
+            </Text>
+      </Text>
       </View>
       </View>
       <ImageBackground
@@ -73,6 +85,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    display:'flex',
+    justifyContent:'center',
   },
   logo: {
     resizeMode: 'cover',
@@ -82,7 +96,7 @@ const styles = StyleSheet.create({
     top:20
   },
   text:{
-    fontSize:18,
+    fontSize:15,
     marginBottom:7
   },
   card:{
@@ -92,11 +106,10 @@ const styles = StyleSheet.create({
     borderBottomColor:'#e93373',
     width:'80%',
     alignSelf:'center',
-    marginTop:'30%',
+    alignItems:'center',
     zIndex:1,
     display:'flex',
     flexDirection:'column',
-    alignItems:'center',
     elevation: 10,
     shadowColor: '#000',
     borderRadius: 7,
@@ -119,14 +132,14 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
   },
   register: {
-   display:'flex',
-   flexDirection:'row',
-   gap:5,
-   marginBottom:20
+   marginBottom:20,
+   width:'90%',
+   alignItems:'center',
   },
   registerText:{
 color:'#e93373',
-fontSize:18
+fontSize:15,
+
   },
   loginBtn: {
     width: '50%',
@@ -136,7 +149,7 @@ fontSize:18
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   loginText: {
     color: 'white',

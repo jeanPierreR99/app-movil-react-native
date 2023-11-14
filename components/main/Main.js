@@ -10,10 +10,12 @@ function Main() {
 
   return (
       <View style={styles.content}>
+        <View style={styles.contentImage}>
           <ImageBackground
       source={require('../../assets/logo.png')}
-      style={styles.containerback}
+      style={styles.backImage}
     />
+    </View>
      <Text style={styles.text}>Servicio de asistencia digital de los centros universitarios de conectividad.</Text>
      <TouchableOpacity
         onPress={() => navigation.navigate('Login')} style={styles.touch}
@@ -32,19 +34,22 @@ const styles = StyleSheet.create({
     height:'100%',
     backgroundColor:'white'
  },
- containerback: {
+ contentImage:{
+  marginTop:70,
+  width:'100%',
+  height:'50%',
+  alignSelf:'center'
+ },
+ backImage: {
     resizeMode: 'cover',
     width:'100%',
-    height:'60%',
-    top:'10%',
-    marginTop:100
+    height:'100%',
   },
   text:{
-    width:'60%',
-    marginLeft:80,
-    marginRight:80,
+    width:'70%',
     fontSize:16,
-    textAlign:'center'
+    textAlign:'center',
+    alignSelf:'center'
   },
   textB:{
 color:'white',
@@ -57,7 +62,7 @@ fontSize:20
     display:'flex',
     flexDirection:'row',
     backgroundColor: '#e93373',
-    width: '60%',
+    width: '70%',
     alignSelf: 'center',
     justifyContent: 'space-around',
     elevation: 8,

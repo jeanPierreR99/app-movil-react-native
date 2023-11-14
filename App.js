@@ -11,6 +11,24 @@ import Login from './components/login/Login';
 const Stack = createStackNavigator();
 
 function App() {
+
+  //   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // useEffect(() => {
+  //   // Verificar el estado de autenticación al cargar la aplicación
+  //   checkAuthentication();
+  // }, []);
+
+  // const checkAuthentication = async () => {
+  //   try {
+  //     // Obtener el estado de autenticación desde AsyncStorage u otro sistema de gestión de estado global
+  //     const authStatus = await AsyncStorage.getItem('isAuthenticated');
+  //     setIsAuthenticated(authStatus === 'true');
+  //   } catch (error) {
+  //     console.error('Error al verificar la autenticación:', error);
+  //   }
+  // };
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main" >

@@ -1,14 +1,35 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Alert, Modal, StyleSheet, Text, Pressable, View, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const ModalScanner = ({scan}) => {
-  const [modalVisible, setModalVisible] = useState(true);
+const ModalScanner = ({scan, data}) => {
+  const [modalVisible, setModalVisible] = useState(false);
   const [register, setRegister] = useState(false)
+  const [newData, setNewData] = useState({});
+
+  const getData = ()=>{
+  fetch(data)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`La solicitud falló con el código de estado ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    setNewData(data[0])
+    setModalVisible(true)
+  })
+  .catch(error => {
+    console.error('Error en la solicitud:', error);
+  })
+}
+
+useEffect(() => {
+  getData()
+}, []);
 
   const okModal = ()=>{
     setRegister(true)
-
     setTimeout(()=>{
     setModalVisible(!modalVisible);
     scan(false);
@@ -34,13 +55,13 @@ const ModalScanner = ({scan}) => {
     <Icon name="qrcode" size={40} color="#5c5d5f" />
     </View>
     <View>
-    <Text style={styles.title}>titulo del laboratorio</Text>
+    <Text style={styles.title}>LAB: {newData && newData.user && newData.user.lab && newData.user.lab.suneduCode}</Text>
     <View>
-    <Text style={styles.textContent}>24 marz 2023 09:00</Text>
+    <Text style={styles.textContent}>Evento: <Text style={styles.secondText}>{newData && newData.user && newData.user.lab && newData.user.lab.events }</Text></Text>
     </View>
     </View>
     </View>
-    <Text style={styles.textContentB}>1238123123 12lbjec21e 1c2,ejb12ej12fewfwefwefwesdasd</Text>
+    <Text style={styles.textContentB}>Responsable: <Text style={styles.secondText}>{newData && newData.user && newData.user.account && newData.user.account.firstName}{" "}{newData && newData.user && newData.user.account && newData.user.account.lastName}</Text></Text>
     </View>
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -72,11 +93,17 @@ const styles = StyleSheet.create({
   },
   textContent:{
     fontSize:15,
-    color:"#5c5d5f"
+    color:"#5c5d5f",
+    fontWeight:'700',
+  },
+  secondText:{
+    fontWeight:'400'
   },
   textContentB:{
-    fontSize:17,
-    color:"#5c5d5f"
+    fontSize:15,
+    color:"#5c5d5f",
+    fontWeight:'700',
+    
   },
   modalView: {
     margin: 20,

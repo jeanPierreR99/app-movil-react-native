@@ -23,7 +23,7 @@ const DATA = [
   {
     id: '58694a0f-3da1-471f-bd96-145571e29d72',
     idLab: 'SL01LA2S2',
-    fecha: '24 sep 2023, 9:30 am'
+    fecha: '24 sep 2023, 9:30 am am am am am'
   },
   
 ];
@@ -36,8 +36,8 @@ const Item = ({idLab, fecha}) => (
     <View style={styles.w}>
     <Text style={styles.title}>Laboratoriosss {idLab}</Text>
     <View style={styles.flexDate}>
-    <Text style={styles.text}>Fecha</Text>
-    <Text style={styles.text}>{fecha}</Text>
+    <Text style={styles.textF}>Fecha:</Text>
+    <Text style={styles.text} numberOfLines={2} >{fecha}</Text>
     </View>
     </View>
   </View>
@@ -52,6 +52,7 @@ const History = () => {
       style={styles.containerback}
     />
       <FlatList
+      style={styles.list}
         data={DATA}
         renderItem={({item}) => <Item idLab={item.idLab} fecha={item.fecha} />}
         keyExtractor={item => item.id}
@@ -66,6 +67,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  list:{
+width:'90%',
+alignSelf:'center'
+  },
   containerback: {
     flex: 1,
     resizeMode: 'cover',
@@ -74,12 +79,14 @@ const styles = StyleSheet.create({
     width:'100%',
     height:'100%'
   },
+  w:{
+width:'80%'
+  },
   item: {
     alignItems:'center',
     backgroundColor: '#f9c2ff',
     padding: 10,
     marginVertical: 8,
-    marginHorizontal: 16,
     display:'flex',
     flexDirection:'row',
     gap:10,
@@ -88,6 +95,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,        
     borderColor: '#e93373',  
     borderStyle: 'solid',
+    width:'100%'
   },
   title: {
     fontSize: 22,
@@ -99,13 +107,18 @@ const styles = StyleSheet.create({
     padding: 20
   },
   text:{
-fontSize:17
+fontSize:17,
+maxWidth: '80%',
   },
+  textF:{
+    fontSize:17,
+    fontWeight:'700'
+      },
   flexDate:{
     display:'flex',
     flexDirection:'row',
     justifyContent:'space-between',
-    gap:120
+    width:'100%',
   }
 });
 
