@@ -2,36 +2,79 @@ import React, {useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground,ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const saveCredentials = async (username, password) => {
-  try {
-    await AsyncStorage.setItem('username', username);
-    await AsyncStorage.setItem('password', password);
-  } catch (error) {
-    console.error('Error al guardar las credenciales:', error);
-  }
+const saveUserStorage = async (id, email, access_token) => {
+
+  const obj = {
+    id,
+    email,
+    access_token
+  };
+    const objJSON = JSON.stringify(obj);
+    await AsyncStorage.setItem('user', objJSON);
+    console.log('Objeto guardado correctamente');
+
 };
+
+const url = "https://cenun-api-render.onrender.com/api/auth/login/visitor"
 
 const Login = () => {
     const [code, setCode] = useState('');
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
     const [loading, setLoading] = useState(false); 
+    const [loginUser, setLoginUser] = useState("")
+    const [showPassword, setShowPassword] = useState(false);
 
-    const loginClick = ()=>{
-        if(code == "17121015" && password == '1234'){
-        setLoading(true);
-        saveCredentials(code, password)
-        setTimeout(() => {
-          navigation.navigate('Profile')
+    const postLogin = async (code_, password_) => {
+      try {
+        const data = {
+          email: code_,
+          password: password_,
+        };
     
-          setLoading(false);
-        }, 2000); 
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+        const res = await response.json();
+        setLoading(false);
+        return res;
+      } catch (error) {
+        console.error('Error en la solicitud:', error);
+        throw error;
+      }
+    };
+
+    const loginClick = async()=>{
+      console.log("click")
+        if(code!= "" && password !=""){
+        setLoading(true);
+        const log = await postLogin(code,password)
+        
+        if(log && log.visitor){
+          saveUserStorage(log.visitor.id, log.visitor.account.email, log.access_token)
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Profile' }],
+          });
         }
         else{
-            Alert.alert("contraseña incorrecta")
+          Alert.alert("credenciales incorrectas")
+        }
+        }
+        else{
+            Alert.alert("Rellene los campos")
         }
     }
+
+    const toggleShowPassword = () => {
+      setShowPassword(!showPassword);
+    };
 
   return (
     <View style={styles.container}>
@@ -51,13 +94,18 @@ const Login = () => {
       </View>
       <View style={styles.inputView}>
         <Text style={styles.text}>Contraseña</Text>
+        <View style={{position:'relative'}}>
         <TextInput
           style={styles.inputText}
           placeholder="Ingrese su contraseña"
           placeholderTextColor="#003f5c"
-          secureTextEntry
+          secureTextEntry={!showPassword}
           onChangeText={(text) => setPassword(text)}
         />
+        <TouchableOpacity onPress={toggleShowPassword} style={styles.eyes}>    
+              {showPassword ?  <Icon name="eye-slash" size={30} color="#e93373" opacity={.8} /> :  <Icon name="eye" size={30} color="#e93373" opacity={.5} />}
+          </TouchableOpacity>
+          </View>
       </View>
       <TouchableOpacity onPress={loginClick} style={styles.loginBtn} disabled={loading} >
       {loading ? (
@@ -87,6 +135,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     display:'flex',
     justifyContent:'center',
+  },
+  eyes:{
+position:'absolute',
+right: 10,
+top:5
   },
   logo: {
     resizeMode: 'cover',

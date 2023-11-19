@@ -1,40 +1,25 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   View,
   FlatList,
   StyleSheet,
   Text,
-  ImageBackground
+  ImageBackground,
+  ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import MenuNav from '../menu/MenuNav';
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    idLab: 'SL01LA2S2',
-    fecha: '24 sep 2023, 9:30 am'
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    idLab: 'SL01LA2S2',
-    fecha: '24 sep 2023, 9:30 am'
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    idLab: 'SL01LA2S2',
-    fecha: '24 sep 2023, 9:30 am am am am am'
-  },
-  
-];
 
-const Item = ({idLab, fecha}) => (
+const Item = ({suneduCode, title, fecha}) => (
   <View style={styles.item}>
     <View>
     <Icon name="qrcode" size={40} color="black" />
     </View>
     <View style={styles.w}>
-    <Text style={styles.title}>Laboratoriosss {idLab}</Text>
+    <Text style={styles.title}>Laboratorio: {suneduCode}</Text>
+    <Text style={styles.title}>Titulo: {title}</Text>
     <View style={styles.flexDate}>
     <Text style={styles.textF}>Fecha:</Text>
     <Text style={styles.text} numberOfLines={2} >{fecha}</Text>
@@ -44,6 +29,47 @@ const Item = ({idLab, fecha}) => (
 );
 
 const History = () => {
+const [newData, setNewData] = useState([]);
+const [user, setUser] = useState("");
+const [loader, setLoader] = useState(true)
+
+const getUserStorage = async () => {
+  const user = await AsyncStorage.getItem('user');
+  const objUser = JSON.parse(user);
+  setUser(objUser)
+};
+
+const fetchData = async () => {
+  const url = `https://cenun-api-render.onrender.com/api/attendance/all/visitor/${user.id}?lab=true&event=true$session=true`
+  const token = user.access_token
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({}),
+    });
+
+    const data = await response.json();
+    setNewData(data); 
+    setLoader(false)
+  } catch (error) {
+    console.error('Error al obtener los datos:', error);
+    setLoader(false)
+  }
+};
+
+useEffect(() => {
+  getUserStorage()
+}, []);
+
+useEffect(() => {
+  fetchData()
+}, [fetchData]);
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.titleTop}>Historial de asistencias</Text>
@@ -51,12 +77,13 @@ const History = () => {
       source={require('../../assets/borrar2.png')}
       style={styles.containerback}
     />
+    {loader? <ActivityIndicator size="x-large" color="gray" />:
       <FlatList
       style={styles.list}
-        data={DATA}
-        renderItem={({item}) => <Item idLab={item.idLab} fecha={item.fecha} />}
-        keyExtractor={item => item.id}
-      />
+        data={newData}
+        renderItem={({item}) => <Item suneduCode={item.lab.suneduCode} title={item.event.title} fecha={item.dateRecord.createdAt} />}
+        keyExtractor={item => item.dateRecord.createdAt}
+      />}
          <MenuNav showMenu={true}/>
     </SafeAreaView>
     
@@ -66,10 +93,13 @@ const History = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom:70
   },
   list:{
-width:'90%',
-alignSelf:'center'
+width:'100%',
+alignSelf:'center',
+paddingLeft:20,
+paddingRight:20
   },
   containerback: {
     flex: 1,
@@ -98,7 +128,7 @@ width:'80%'
     width:'100%'
   },
   title: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight:'700'
   },
   titleTop: {
@@ -112,7 +142,6 @@ maxWidth: '80%',
   },
   textF:{
     fontSize:17,
-    fontWeight:'700'
       },
   flexDate:{
     display:'flex',

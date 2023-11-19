@@ -6,21 +6,28 @@ const ModalScanner = ({scan, data}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [register, setRegister] = useState(false)
   const [newData, setNewData] = useState({});
+  const [activeButtons, setActiveButtons] = useState(false)
 
   const getData = ()=>{
   fetch(data)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`La solicitud falló con el código de estado ${response.status}`);
-    }
-    return response.json();
-  })
+  .then(response => response.json())
   .then(data => {
-    setNewData(data[0])
-    setModalVisible(true)
+    if(data.user.account){
+      console.log("succefull")
+      setNewData(data)
+      setModalVisible(true)
+      setActiveButtons(true)
+    }
+    else{
+      console.log("no succefull")
+      setModalVisible(true)
+      setActiveButtons(false)
+    }
   })
-  .catch(error => {
-    console.error('Error en la solicitud:', error);
+  .catch(() => {
+    console.log("no succefull")
+    setModalVisible(true)
+    setActiveButtons(false)
   })
 }
 
@@ -34,9 +41,13 @@ useEffect(() => {
     setModalVisible(!modalVisible);
     scan(false);
     setRegister(false)
-    Alert.alert("su ingreso fue registrado")
+    // Alert.alert("su ingreso fue registrado")
   },2000)}
   
+  const errorMOdal = ()=>{
+    setModalVisible(!modalVisible);
+    scan(false);
+  }
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -57,21 +68,27 @@ useEffect(() => {
     <View>
     <Text style={styles.title}>LAB: {newData && newData.user && newData.user.lab && newData.user.lab.suneduCode}</Text>
     <View>
-    <Text style={styles.textContent}>Evento: <Text style={styles.secondText}>{newData && newData.user && newData.user.lab && newData.user.lab.events }</Text></Text>
+    <Text style={styles.textContent}>Evento: <Text style={styles.secondText}>{newData && newData.user && newData.user.lab && newData.user.lab.events[0].title }</Text></Text>
     </View>
     </View>
     </View>
     <Text style={styles.textContentB}>Responsable: <Text style={styles.secondText}>{newData && newData.user && newData.user.account && newData.user.account.firstName}{" "}{newData && newData.user && newData.user.account && newData.user.account.lastName}</Text></Text>
     </View>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={ okModal}>
-              {register ? (
-          <ActivityIndicator size="small" color="white" />
-        ) : (
-          <Text style={styles.textStyle}>Marcar Ingreso</Text>
-        )}
-            </Pressable>
+    {
+      activeButtons? <Pressable
+      style={[styles.button, styles.buttonClose]}
+      onPress={ okModal}>
+      {register ? (
+  <ActivityIndicator size="small" color="white" />
+) : (
+  <Text style={styles.textStyle}>Marcar Ingreso</Text>
+)}
+    </Pressable>: <Pressable
+      style={[styles.button, styles.buttonClose]}
+      onPress={ errorMOdal}>
+  <Text style={styles.textStyle}>Cerrar</Text>
+    </Pressable>
+    }
           </View>
         </View>
       </Modal>

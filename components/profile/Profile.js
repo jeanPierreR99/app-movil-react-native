@@ -4,36 +4,27 @@ import { useNavigation } from '@react-navigation/native';
 import MenuNav from '../menu/MenuNav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const getCredentials = async () => {
-  try {
-    const username = await AsyncStorage.getItem('username');
-    const password = await AsyncStorage.getItem('password');
-    return { username, password };
-  } catch (error) {
-    console.error('Error al obtener las credenciales:', error);
-  }
-};
 
 function Profile() {
   const navigation = useNavigation();
 
-  const verifyStorage = async () => {
-    const credentials = await getCredentials();
-    if (credentials && credentials.username && credentials.password) {
-    alert("existen..... codigo:"+credentials.username+" password: "+credentials.password)
-    navigation.navigate('Main')
-  } else {
-      alert("no existe")
-    }
+  const logout = async () => {
+
+      await AsyncStorage.clear();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' }],
+      });
   };
+  
  return (
     <View style={styles.view}>
-    <Text >menu profilssssssse</Text>
+    <Text >EN DESARROLLO.......</Text>
 
     <TouchableOpacity
-        onPress={verifyStorage}
+        onPress={logout}
       >
-        <Text>local storage</Text>
+        <Text style={{color:'red'}}>SALIR</Text>
       </TouchableOpacity>
     <MenuNav showMenu={true}/>
     </View>
