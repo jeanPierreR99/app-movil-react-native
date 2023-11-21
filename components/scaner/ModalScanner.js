@@ -1,12 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import {Alert, Modal, StyleSheet, Text, Pressable, View, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ModalScanner = ({scan, data}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [register, setRegister] = useState(false)
   const [newData, setNewData] = useState({});
   const [activeButtons, setActiveButtons] = useState(false)
+  const [user, setUser] = useState("");
+  const [fecthData, setFecthData] = useState("")
+
+  const getUserStorage = async () => {
+    const user = await AsyncStorage.getItem('user');
+    const objUser = JSON.parse(user);
+    setUser(objUser)
+  };
 
   const getData = ()=>{
   fetch(data)
@@ -14,6 +23,7 @@ const ModalScanner = ({scan, data}) => {
   .then(data => {
     if(data.user.account){
       console.log("succefull")
+      console.log(data)
       setNewData(data)
       setModalVisible(true)
       setActiveButtons(true)
@@ -33,16 +43,51 @@ const ModalScanner = ({scan, data}) => {
 
 useEffect(() => {
   getData()
+  getUserStorage()
 }, []);
 
-  const okModal = ()=>{
+
+  const postAttendance = async ()=>{
+      const url = `https://cenun-api-render.onrender.com/api/attendance`
+      const token = user.access_token
+    
+      const dataFecht = {
+        "visitorId": user.id,
+        "labId": newData.user.lab.id,
+        "eventId": newData.user.lab.events[0].id,
+        "sessionId": newData.id
+      }
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(dataFecht),
+        });
+    
+        const data = await response.json();
+        // setFecthData(data)
+        console.log(data)
+        setModalVisible(!modalVisible);
+        scan(false);
+        setRegister(false)
+        Alert.alert("su registro fue exitoso")
+      } catch (error) {
+        console.error('Error al obtener los datos:', error);
+        setModalVisible(!modalVisible);
+        scan(false);
+        setRegister(false)
+        Alert.alert("ocurrio un error al registrarse")
+      }
+
+  }
+
+  const okModal = async ()=>{
     setRegister(true)
-    setTimeout(()=>{
-    setModalVisible(!modalVisible);
-    scan(false);
-    setRegister(false)
-    // Alert.alert("su ingreso fue registrado")
-  },2000)}
+    postAttendance()
+  }
   
   const errorMOdal = ()=>{
     setModalVisible(!modalVisible);

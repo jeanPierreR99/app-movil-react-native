@@ -4,17 +4,20 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const saveUserStorage = async (id, email, access_token) => {
-
+const saveUserStorage = async (id, career, dni ,email, firstName, lastName, phone, access_token) => {
   const obj = {
     id,
+    career,
+    dni,
     email,
+    firstName,
+    lastName,
+    phone,
     access_token
   };
     const objJSON = JSON.stringify(obj);
     await AsyncStorage.setItem('user', objJSON);
     console.log('Objeto guardado correctamente');
-
 };
 
 const url = "https://cenun-api-render.onrender.com/api/auth/login/visitor"
@@ -50,6 +53,35 @@ const Login = () => {
       }
     };
 
+    const getAccount = (id, token)=>{
+      urlAccount = `https://cenun-api-render.onrender.com/api/visitor/${id}?events=true&attendances=true`;
+
+      fetch(urlAccount, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+  .then(response => response.json())
+  .then(data => {
+    if(data.studentCode){
+      console.log("succefull")
+      saveUserStorage(data.id, data.career, data.account.dni, data.account.email, data.account.firstName, data.account.lastName, data.account.phone, token)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Profile' }],
+      });
+    }
+    else{
+      console.log("no succefull")
+    }
+  })
+  .catch(() => {
+    console.log("no succefull")
+  })
+    }
+
     const loginClick = async()=>{
       console.log("click")
         if(code!= "" && password !=""){
@@ -57,11 +89,7 @@ const Login = () => {
         const log = await postLogin(code,password)
         
         if(log && log.visitor){
-          saveUserStorage(log.visitor.id, log.visitor.account.email, log.access_token)
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Profile' }],
-          });
+          getAccount(log.visitor.id, log.access_token)
         }
         else{
           Alert.alert("credenciales incorrectas")
@@ -71,6 +99,10 @@ const Login = () => {
             Alert.alert("Rellene los campos")
         }
     }
+
+      registerClick = ()=>{
+        navigation.navigate('Register')
+      }
 
     const toggleShowPassword = () => {
       setShowPassword(!showPassword);
@@ -116,8 +148,7 @@ const Login = () => {
       </TouchableOpacity>
         <View style={styles.register}>
         <Text style={styles.text}>¿Todavia no tienesuna cuenta?.
-        {' '} <Text style={styles.registerText}>Registrarse
-            </Text>
+        {' '}<Text style={styles.registerText} onPress={registerClick}>Registrarse</Text>
       </Text>
       </View>
       </View>
@@ -150,7 +181,8 @@ top:5
   },
   text:{
     fontSize:15,
-    marginBottom:7
+    marginBottom:7,
+    fontWeight:'700'
   },
   card:{
     borderTopWidth:4,
@@ -192,6 +224,7 @@ top:5
   registerText:{
 color:'#e93373',
 fontSize:15,
+fontWeight:'700'
 
   },
   loginBtn: {

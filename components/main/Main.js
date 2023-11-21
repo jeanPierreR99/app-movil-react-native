@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 ;
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -11,8 +11,8 @@ function Main() {
   return (
       <View style={styles.content}>
         <View style={styles.contentImage}>
-          <ImageBackground
-      source={require('../../assets/logo.png')}
+          <Image
+      source={require('../../assets/logo_unamad.png')}
       style={styles.backImage}
     />
     </View>
@@ -35,13 +35,14 @@ const styles = StyleSheet.create({
     backgroundColor:'white'
  },
  contentImage:{
-  marginTop:70,
-  width:'100%',
-  height:'50%',
-  alignSelf:'center'
+  marginTop:100,
+  width:'70%',
+  height:'40%',
+  alignSelf:'center',
  },
  backImage: {
-    resizeMode: 'cover',
+  alignSelf:'center',
+    resizeMode: 'contain',
     width:'100%',
     height:'100%',
   },
@@ -49,7 +50,8 @@ const styles = StyleSheet.create({
     width:'70%',
     fontSize:16,
     textAlign:'center',
-    alignSelf:'center'
+    alignSelf:'center',
+    fontWeight:'700'
   },
   textB:{
 color:'white',
