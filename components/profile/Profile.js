@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import MenuNav from '../menu/MenuNav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput } from 'react-native-gesture-handler';
@@ -28,52 +28,52 @@ function Profile() {
   // access_token
 
  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>DATOS PERSONALES</Text>
-    <View style={styles.item}>
-      <Text style={styles.itemText}>CARRERA:</Text>
+    <View className="flex-1 pt-[20px]">
+      <Text className="text-xl ml-5 font-bold">DATOS PERSONALES</Text>
+    <View className="my-2 px-5">
+      <Text className="text-lg font-bold">CARRERA:</Text>
       <TextInput
-      style={styles.itemInputText}
+      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
       value={user.career}
       editable={false}
       />
     </View>
-    <View style={styles.item}>
-      <Text style={styles.itemText}>DNI:</Text>
+    <View className="my-2 px-5">
+      <Text className="text-lg font-bold">DNI:</Text>
       <TextInput
-      style={styles.itemInputText}
+      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
       value={user.dni}
       editable={false}
       />
     </View>
-    <View style={styles.item}>
-      <Text style={styles.itemText}>EMAIL:</Text>
+    <View className="my-2 px-5">
+      <Text className="text-lg font-bold">EMAIL:</Text>
       <TextInput
-      style={styles.itemInputText}
+      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
       value={user.email}
       editable={false}
       />
     </View>
-    <View style={styles.item}>
-      <Text style={styles.itemText}>NOMBRES:</Text>
+    <View className="my-2 px-5">
+      <Text className="text-lg font-bold">NOMBRES:</Text>
       <TextInput
-      style={styles.itemInputText}
+      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
       value={user.firstName}
       editable={false}
       />
     </View>
-    <View style={styles.item}>
-      <Text style={styles.itemText}>APELLIDOS:</Text>
+    <View className="my-2 px-5">
+      <Text className="text-lg font-bold">APELLIDOS:</Text>
       <TextInput
-      style={styles.itemInputText}
+      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
       value={user.lastName}
       editable={false}
       />
     </View>
-    <View style={styles.item}>
-      <Text style={styles.itemText}>TELEFONO:</Text>
+    <View className="my-2 px-5">
+      <Text className="text-lg font-bold">TELEFONO:</Text>
       <TextInput
-      style={styles.itemInputText}
+      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
       value={user.phone}
       editable={false}
       />
@@ -82,36 +82,5 @@ function Profile() {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    paddingTop:20
-  },
-  title:{
-    fontSize:20,
-    alignSelf:'center',
-    fontWeight:'600',
-  },
-  item:{
-    display:'flex',
-    flexDirection:'row',
-    gap:10,
-    alignItems:'center',
-    paddingRight:20,
-    paddingLeft:20,
-    padding:10
-  },
-  itemText:{
-    fontSize:18,
-    fontWeight:'400',
-  },
-  itemInputText:{
-    fontSize:18,
-    color:'gray',
-    backgroundColor:'#ebebeb',
-    height:30,
-    padding:5,
-  }
 
-})
 export default Profile;
