@@ -12,6 +12,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { ValidateEmail } from "../../validateEmail";
+import { useLogin } from "../../navigation/context/LoginProvider";
 
 const saveUserStorage = async (
   id,
@@ -23,6 +25,7 @@ const saveUserStorage = async (
   phone,
   access_token
 ) => {
+  const initSplit = firstName.split("")[0]
   const obj = {
     id,
     career,
@@ -32,6 +35,7 @@ const saveUserStorage = async (
     lastName,
     phone,
     access_token,
+    initial: initSplit
   };
   const objJSON = JSON.stringify(obj);
   await AsyncStorage.setItem("user", objJSON);
@@ -41,6 +45,7 @@ const saveUserStorage = async (
 const url = "https://cenun-api-render.onrender.com/api/auth/login/visitor";
 
 const Login = () => {
+  const {setIsLogin} = useLogin()
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
@@ -49,11 +54,19 @@ const Login = () => {
 
   const postLogin = async (code_, password_) => {
     try {
-      const data = {
-        email: code_,
-        password: password_,
-      };
-
+      let data ="";
+      if(ValidateEmail(code_)){
+        data = {
+          email: code_,
+          password: password_,
+        };
+      }
+      else{
+        data = {
+          username: code_,
+          password: password_,
+        };
+      }
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -94,10 +107,7 @@ const Login = () => {
             data.account.phone,
             token
           );
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Profile" }],
-          });
+          setIsLogin(true)
         } else {
           console.log("no succefull");
         }
@@ -108,7 +118,6 @@ const Login = () => {
   };
 
   const loginClick = async () => {
-    console.log("click");
     if (code != "" && password != "") {
       setLoading(true);
       const log = await postLogin(code, password);
@@ -133,50 +142,49 @@ const Login = () => {
 
   return (
     <View className="flex-1 bg-white justify-center">
-      <View className="w-[80%] self-center shadow shadow-gray-700 bg-white z-[1] rounded-md border-t-[4px] border-b-[4px] border-[#e93373] items-center ">
+      <View className="w-[80%] self-center  items-center ">
         <ImageBackground
-          source={require("../../assets/logo.png")}
+          source={require("../../../assets/logo.png")}
           className="w-[220px] h-[220px] self-center mt-[20px]"
         />
-        <View className="w-[80%] p-[10px]">
-          <Text className="text-[15px] font-bold mb-[7px]">Usuario</Text>
-          <TextInput
-            className="h-[40px] bg-white border border-[#e93373] rounded-md text-[16px] p-[7px] text-[#5c5d5f] shadow-md shadow-rose-500"
-            placeholder="Email o código de estudiante"
-            placeholderTextColor="#003f5c"
-            onChangeText={(text) => setCode(text)}
-          />
-        </View>
-        <View className="w-[80%] p-[10px]">
-          <Text className="text-[15px] font-bold mb-[7px]">Contraseña</Text>
-          <View className="relative">
+        <View className="w-full p-[10px]">
+          <View>
+            <View className="absolute z-[1] left-2 top-[5px]">
+              <Icon name="user" size={30} color="green" opacity={0.4} />
+            </View>
             <TextInput
-              className="h-[40px] bg-white border border-[#e93373] rounded-md text-[16px] p-[7px] text-rose-500 shadow-md shadow-rose-500"
+              className="h-[40px] bg-green-100 rounded-md text-[16px] pl-10 text-gray-500"
+              placeholder="Email o código de estudiante"
+              onChangeText={(text) => setCode(text)}
+            />
+          </View>
+        </View>
+        <View className="w-full p-[10px]">
+          <View className="relative">
+            <View className="absolute z-[1] left-2 top-[5px]">
+              <Icon name="lock" size={30} color="green" opacity={0.4} />
+            </View>
+            <TextInput
+              className="h-[40px] bg-green-100 rounded-md text-[16px] pl-10 text-green-500"
               placeholder="Ingrese su contraseña"
-              placeholderTextColor="#003f5c"
               secureTextEntry={!showPassword}
               onChangeText={(text) => setPassword(text)}
             />
             <TouchableOpacity
               onPress={toggleShowPassword}
-              className="absolute right-[10px] top-[5px]"
+              className="absolute right-2 top-[5px]"
             >
               {showPassword ? (
-                <Icon
-                  name="eye-slash"
-                  size={30}
-                  color="#e93373"
-                  opacity={0.8}
-                />
+                <Icon name="eye-slash" size={30} color="green" opacity={0.8} />
               ) : (
-                <Icon name="eye" size={30} color="#e93373" opacity={0.5} />
+                <Icon name="eye" size={30} color="green" opacity={0.4} />
               )}
             </TouchableOpacity>
           </View>
         </View>
         <TouchableOpacity
           onPress={loginClick}
-          className="w-9/12 bg-[#e93373] h-[40px] rounded-md items-center justify-center my-[20px] "
+          className="w-full bg-green-500 h-[40px] rounded-md items-center justify-center my-[20px] "
           disabled={loading}
         >
           {loading ? (
@@ -186,18 +194,18 @@ const Login = () => {
           )}
         </TouchableOpacity>
         <View className="mb-[20px] w-[90%] items-center">
-          <Text className="text-[15px] font-bold mb-[7px]">
+          <Text className="text-[15px] font-bold mb-[7px] text-gray-600">
             ¿Todavia no tienes una cuenta?.{" "}
-            <Text className="text-[#e93373]" onPress={registerClick}>
+            <Text className="text-green-500" onPress={registerClick}>
               Registrarse
             </Text>
           </Text>
         </View>
       </View>
-      <ImageBackground
-        source={require("../../assets/borrar2.png")}
+      {/* <ImageBackground
+        source={require("../../../assets/borrar2.png")}
         className="flex-1 absolute w-full h-full opacity-40"
-      />
+      /> */}
     </View>
   );
 };

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
-import MenuNav from '../menu/MenuNav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput } from 'react-native-gesture-handler';
-
+import DrawerHeader from '../../navigation/DrawerHeader'
 
 function Profile() {
   const [user, setUser]=useState("")
-
-
   const getUserStorage = async () => {
     const user = await AsyncStorage.getItem('user');
     const objUser = JSON.parse(user);
@@ -26,59 +23,58 @@ function Profile() {
   // lastName,
   // phone,
   // access_token
-
  return (
     <View className="flex-1 pt-[20px]">
-      <Text className="text-xl ml-5 font-bold">DATOS PERSONALES</Text>
+      <DrawerHeader></DrawerHeader>
+      <Text className="text-xl ml-5 font-bold text-center text-green-500">DATOS PERSONALES</Text>
     <View className="my-2 px-5">
-      <Text className="text-lg font-bold">CARRERA:</Text>
+      <Text className="font-bold text-gray-600">CARRERA:</Text>
       <TextInput
-      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
+      className="text-lg bg-gray-200 rounded-md text-gray-500 p-1"
       value={user.career}
       editable={false}
       />
     </View>
     <View className="my-2 px-5">
-      <Text className="text-lg font-bold">DNI:</Text>
+      <Text className="font-bold text-gray-600">DNI:</Text>
       <TextInput
-      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
+      className="text-lg bg-gray-200 rounded-md text-gray-500 p-1"
       value={user.dni}
       editable={false}
       />
     </View>
     <View className="my-2 px-5">
-      <Text className="text-lg font-bold">EMAIL:</Text>
+      <Text className="font-bold text-gray-600">EMAIL:</Text>
       <TextInput
-      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
+      className="text-lg bg-gray-200 rounded-md text-gray-500 p-1"
       value={user.email}
       editable={false}
       />
     </View>
     <View className="my-2 px-5">
-      <Text className="text-lg font-bold">NOMBRES:</Text>
+      <Text className="font-bold text-gray-600">NOMBRES:</Text>
       <TextInput
-      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
+      className="text-lg bg-gray-200 rounded-md text-gray-500 p-1"
       value={user.firstName}
       editable={false}
       />
     </View>
     <View className="my-2 px-5">
-      <Text className="text-lg font-bold">APELLIDOS:</Text>
+      <Text className="font-bold text-gray-600">APELLIDOS:</Text>
       <TextInput
-      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
+      className="text-lg bg-gray-200 rounded-md text-gray-500 p-1"
       value={user.lastName}
       editable={false}
       />
     </View>
     <View className="my-2 px-5">
-      <Text className="text-lg font-bold">TELEFONO:</Text>
+      <Text className="font-bold text-gray-600">TELEFONO:</Text>
       <TextInput
-      className="text-lg bg-[#ebebeb] text-gray-500 p-1"
+      className="text-lg bg-gray-200 rounded-md text-gray-500 p-1"
       value={user.phone}
       editable={false}
       />
     </View>
-    <MenuNav showMenu={true}/>
     </View>
   );
 }

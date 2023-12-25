@@ -105,8 +105,8 @@ useEffect(() => {
         }}>
         <View className="flex-1 justify-center items-center mt-[22px]">
           <View className="mt-[20px] bg-white rounded-lg p-[35px] items-center ">
-            <View className="border-2 border-[#e93373] p-[10px] self-center">
-            <View className="flex flex-row border-b border-[#e93373] mb-[10px] pb-[10px]">
+            <View className="border-2 border-green-400 p-[10px] self-center">
+            <View className="flex flex-row border-b border-green-400 mb-[10px] pb-[10px]">
           <View className="mr-2">
     <Icon name="qrcode" size={40} color="#5c5d5f" />
     </View>
@@ -121,7 +121,7 @@ useEffect(() => {
     </View>
     {
       activeButtons? <Pressable
-      className="rounded-md p-[10px] mt-[20px] w-[200px] bg-[#e93373]"
+      className="rounded-md p-[10px] mt-[20px] w-[200px] bg-green-400"
       onPress={ okModal}>
       {register ? (
   <ActivityIndicator size="small" color="white" />
@@ -129,7 +129,7 @@ useEffect(() => {
   <Text className="text-white font-bold text-center">Marcar Ingreso</Text>
 )}
     </Pressable>: <Pressable
-      className="rounded-md p-[10px] mt-[20px] w-[200px] bg-[#e93373]"
+      className="rounded-md p-[10px] mt-[20px] w-[200px] bg-green-400"
       onPress={ errorMOdal}>
   <Text className="text-white font-bold text-center">Cerrar</Text>
     </Pressable>
